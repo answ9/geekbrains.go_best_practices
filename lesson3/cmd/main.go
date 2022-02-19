@@ -1,14 +1,21 @@
 package main
 
 import (
-	"lesson3/cmd/internal/app"
-	"lesson3/cmd/internal/pkg/config"
-	"lesson3/cmd/internal/pkg/files"
-	"lesson3/cmd/internal/pkg/log"
+	"github.com/sirupsen/logrus"
+	"lesson3/pkg/config"
+
+	f "lesson3/pkg/files"
+	p "lesson3/pkg/program"
 )
 
 func main() {
-	log := log.NewLogWithConfuguration()
+	log := logrus.New()
+	customFormatter := new(logrus.TextFormatter)
+	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	customFormatter.FullTimestamp = true
+	log.SetLevel(logrus.DebugLevel)
+	log.SetFormatter(customFormatter)
+
 	log.Info("Service started")
 	defer log.Info("Service finished")
 
@@ -20,9 +27,9 @@ func main() {
 	}
 	log.Info("Config initialization completed")
 
-	uniqueFiles := files.NewUniqueFilesMap(log)
+	uniqueFiles := f.NewUniqueFilesMap(log)
 
-	program := app.NewService(
+	program := p.NewProgram(
 		cnfg,
 		uniqueFiles,
 		uniqueFiles,
